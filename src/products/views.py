@@ -4,12 +4,14 @@ from .forms import ProductCreateForm, RawProductionForm
 from .models import Product
 # Create your views here.
 
+
 def product_list_view(request):
     queryset = Product.objects.all()
     context = {
         "object_list": queryset
     }
     return render(request, "products/product_list.html", context)
+
 
 def product_delete_view(request, id):
     obj = get_object_or_404(Product, id=id)
@@ -48,53 +50,31 @@ def render_initial_data(request):
     context = {"form": form}
     return render(request, "products/product_create.html", context)
 
-def product_create_view(request):
-    form = RawProductionForm()
-    if request.method == 'POST':
-        form = RawProductionForm(request.POST)
-        if form.is_valid():
-            print(form.cleaned_data)
-            Product.objects.create(**form.cleaned_data)
-        else:
-            print(form.errors)
+
+def product_update_view(request, id):
+    obj = get_object_or_404(Product, id=id)
+    form = ProductCreateForm(request.POST or None, instance=obj)
+    if form.is_valid():
+        form.save()
     context = {
         'form': form
     }
     return render(request, "products/product_create.html", context)
 
 
-# def product_create_view(request):
-#     print(request.GET)
-#     print(request.POST)
-#     print(request.POST.get('title'))
-#     context = {}
-#     return render(request, "products/product_create.html", context)
-
-# def product_create_view(request):
-#     form = ProductCreateForm(request.POST or None)
-#     if form.is_valid():
-#         form.save()
-#         form = ProductCreateForm()
-#     context = {
-#         'form': form
-#     }
-#     return render(request, "products/product_create.html", context)
-
-# def product_create_view(request):
-#     form = ProductCreateForm(request.POST or None)
-#     if form.is_valid():
-#         form.save()
-#         form = ProductCreateForm()
-#     context = {"form": form}
-#     return render(request, "products/product_create.html", context)
+def product_create_view(request):
+    form = ProductCreateForm(request.POST or None)
+    if form.is_valid():
+        form.save()
+        form = ProductCreateForm()
+    context = {
+        'form': form
+    }
+    return render(request, "products/product_create.html", context)
 
 
-def product_detail_view(request):
-    obj = Product.objects.get(id=1)
-    # context = {
-    #     "title": obj.title,
-    #     "description": obj.description
-    # }
+def product_detail_view(request, id):
+    obj = get_object_or_404(Product, id=id)
     context = {
         'object': obj
     }
