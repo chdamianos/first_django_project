@@ -1,0 +1,7 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>{{ object.title }}</h1>
+<p>{{ object.author }}</p>
+<p>{% if object.body != None and object.body != '' %}{{ object.body }}{% else %}Article Coming Soon{% endif %}</p>
+{% endblock %}
